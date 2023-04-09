@@ -1,0 +1,281 @@
+openapi: 3.0.3
+info:
+  title: PRODUCTCRUD - API Mercadona Product Crud
+  description: 'Api used to manage mercadona information product'
+  version: 1.0.0
+tags:
+  - name: product
+    description: Everything about Mercadona product
+  - name: supplier
+    description: Everything about Mercadona supplier
+paths:
+  /product:
+    put:
+      tags:
+        - product
+      summary: Update an existing product
+      description: Update an existing product by Id
+      operationId: updateProduct
+      requestBody:
+        description: Update an existent product
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'          
+        '400':
+          description: Invalid Product
+        '404':
+          description: Product not found
+        '405':
+          description: Validation exception
+    post:
+      tags:
+        - product
+      summary: Add a new product to mercadona
+      description: Add a new product to mercadona
+      operationId: addProduct
+      requestBody:
+        description: Create a new product in mercadona
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'          
+        '405':
+          description: Invalid input
+  /product/findAll:
+    get:
+      tags:
+        - product
+      summary: Finds all mercadona products
+      description: Finds all mercadona products
+      operationId: findAllProducts
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'          
+  /product/{eanCode}:
+    get:
+      tags:
+        - product
+      summary: Find product by EAN
+      description: Returns a single product
+      operationId: getProductByEan
+      parameters:
+        - name: eanCode
+          in: path
+          description: ean code of product to return
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'          
+        '400':
+          description: Invalid ean product
+        '404':
+          description: Product not found
+    delete:
+      tags:
+        - product
+      summary: Deletes a product
+      description: delete a product
+      operationId: deleteProduct
+      parameters:
+        - name: eanCode
+          in: path
+          description: Product ean to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid product value
+  /supplier:
+    put:
+      tags:
+        - supplier
+      summary: Update an existing supplier
+      description: Update an existing supplier
+      operationId: updateSupplier
+      requestBody:
+        description: Update an existent supplier
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Supplier'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Supplier'          
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Supplier not found
+        '405':
+          description: Validation exception
+    post:
+      tags:
+        - supplier
+      summary: Add a new supplier to mercadona
+      description: Add a new supplier to mercadona
+      operationId: addSupplier
+      requestBody:
+        description: Create a new supplier in mercadona
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Supplier'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Supplier'         
+        '405':
+          description: Invalid input
+  /supplier/findAll:
+    get:
+      tags:
+        - supplier
+      summary: Finds all mercadona suppliers
+      description: Finds all mercadona suppliers
+      operationId: findAllSuppliers
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Supplier'        
+  /supplier/{supplierId}:
+    get:
+      tags:
+        - supplier
+      summary: Find supplier by ID
+      description: Returns a single supplier
+      operationId: getSupplierById
+      parameters:
+        - name: supplierId
+          in: path
+          description: id of supplier to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Supplier'          
+        '400':
+          description: Invalid id supplied
+        '404':
+          description: supplier not found
+    delete:
+      tags:
+        - supplier
+      summary: Deletes a supplier
+      description: delete a supplier
+      operationId: deleteSupplier
+      parameters:
+        - name: supplierId
+          in: path
+          description: supplier id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: Invalid product value
+components:
+  schemas:
+    Product:
+      required:
+        - ean
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 45905
+        ean:
+          type: string
+          example: 8437008459059
+        name:
+          type: string
+          example: Cleaner
+        destination:
+          type: string
+          example: Colmenas
+        supplier:
+          $ref: '#/components/schemas/Supplier'
+    ProductRequest:
+      required:
+        - id
+        - name
+        - destination
+        - supplier
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 45905
+        name:
+          type: string
+          example: Cleaner
+        destination:
+          type: integer
+          format: int64
+          example: 9
+        supplier:
+          $ref: '#/components/schemas/Supplier'
+    Supplier:
+      required:
+        - id
+        - name
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 8437008
+        name:
+          type: string
+          example: mercadona
